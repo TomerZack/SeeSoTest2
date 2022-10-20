@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean cameraPermit = false;
     private boolean videoRunning = false;
+    private long startTime = -1;
     ArrayList<String> dataArray = new ArrayList<String>();
 
     private Button startButton;
@@ -109,7 +110,8 @@ public class MainActivity extends AppCompatActivity {
                 float filteredX = filteredValues[0];
                 float filteredY = filteredValues[1];
                 if (videoRunning) {
-                    dataArray.add(filteredX + "," + filteredY + "\n");
+                    if (startTime == -1) startTime = gazeInfo.timestamp;
+                    dataArray.add(((double)(gazeInfo.timestamp - startTime)/1000)  + ", " + filteredX + "," + filteredY + "\n");
                 }
                 //Log.i("SeeSo", "gaze filterd coord " + filteredX + "x" + filteredY);
             }
@@ -151,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
         backgroundThread.start();
         backgroundHandler = new Handler(backgroundThread.getLooper());
+        dataArray.add("Sec,X,Y\n");
         checkPermission();
 
         // offsetting the calibration viewer
